@@ -3,7 +3,7 @@ const config = {
   theme: {
     extend: {
       colors: {
-        background: "#050505", // Deep Obsidian
+        background: "#0F1115", // Deep Obsidian
         foreground: "#FFFFFF",
         accent: {
           blue: "#3B82F6",
