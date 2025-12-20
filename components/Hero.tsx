@@ -19,7 +19,7 @@ export const Hero = () => {
 
         <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight leading-[1.1]">
           The <span className="text-gray-500 font-normal">Atelier</span> for your <br />
-          Technology Systems
+          Technology
         </h1>
 
         <p className="mt-8 text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
