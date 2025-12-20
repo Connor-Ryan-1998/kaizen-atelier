@@ -34,8 +34,10 @@ export default function Home() {
         <ContentSections />
       </div>
 
+      <Services />
+
       {/* Final CTA Section (Boilerplate placeholder) */}
-      <section className="py-32 px-6 flex flex-col items-center text-center">
+      <section id="contact" className="scroll-mt-24 py-32 px-6 flex flex-col items-center text-center">
         <div className="max-w-3xl p-12 rounded-[3rem] bg-gradient-to-b from-[#1A1D23] to-transparent border border-white/5">
           <h2 className="text-4xl font-bold text-white mb-6">
             Ready to refine your <br /> digital craft?
@@ -44,9 +46,12 @@ export default function Home() {
             Whether you need a full data audit or a custom IT infrastructure,
             Kaizen Atelier is ready to build with you.
           </p>
-          <button className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-semibold transition-all shadow-xl shadow-indigo-500/20">
+          <a
+            href="mailto:hq2831@gmail.com?subject=Project%20Request"
+            className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-semibold transition-all shadow-xl shadow-indigo-500/20"
+          >
             Start a Project
-          </button>
+          </a>
         </div>
       </section>
 

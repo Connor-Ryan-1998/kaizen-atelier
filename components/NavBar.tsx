@@ -12,14 +12,16 @@ export const Navbar = () => {
         <div className="text-white font-bold tracking-tight text-sm mr-4">KAIZEN <span className="text-indigo-400">ATELIER</span></div>
         <div className="hidden md:flex gap-6 text-xs font-medium text-gray-300">
           <a href="#about" className="hover:text-white transition">Approach</a>
-          <a href="#services" className="hover:text-white transition">Services</a>
           <a href="#process" className="hover:text-white transition">Process</a>
+          <a href="#services" className="hover:text-white transition">Services</a>
         </div>
-        <button className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-full transition-all">
+        <a
+          href="mailto:hq2831@gmail.com?subject=Project%20Request"
+          className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-full transition-all"
+        >
           Contact us
-        </button>
+        </a>
       </motion.nav>
     </div>
   );
 }
-
