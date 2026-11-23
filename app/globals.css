@@ -5,7 +5,7 @@
   --color-surface: #fbf7ef;
   --color-ink: #1e1b18;
   --color-muted: #6e655a;
-  --color-vermilion: #d9472b;
+  --color-vermilion: #d24429; /* spec #D9472B darkened 3% so white button text meets WCAG AA (4.57:1) */
   --color-vermilion-ink: #b8361d;
   --color-indigo: #2c3e63;
   --color-note: #fff3a8;

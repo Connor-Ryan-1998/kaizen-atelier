@@ -33,8 +33,8 @@ export interface DeskApi {
   move(id: WindowId, pos: Pos): void;
   /** The desk area element (below the menu bar), used for drag bounds. */
   deskRef: RefObject<HTMLDivElement | null>;
-  /** True once the user has interacted; windows only grab focus after this. */
-  interacted: RefObject<boolean>;
+  /** Window the user just opened; it takes keyboard focus once it is on top. */
+  pendingFocusRef: RefObject<WindowId | null>;
 }
 
 export const DeskContext = createContext<DeskApi | null>(null);
@@ -51,7 +51,7 @@ export function Desktop() {
   const isDesktop = useIsDesktop();
   const [showNote] = useState(() => pathname === "/");
   const deskRef = useRef<HTMLDivElement>(null);
-  const interacted = useRef(false);
+  const pendingFocusRef = useRef<WindowId | null>(null);
   const top = focused(state);
   const topRef = useRef(top);
   const stateRef = useRef(state);
@@ -61,7 +61,7 @@ export function Desktop() {
   });
 
   const open = useCallback((id: WindowId, hash?: string) => {
-    interacted.current = true;
+    pendingFocusRef.current = id;
     if (hash && id !== "notFound") {
       window.history.pushState(null, "", getWindow(id).route + hash);
       window.dispatchEvent(new HashChangeEvent("hashchange"));
@@ -71,7 +71,7 @@ export function Desktop() {
 
   const close = useCallback(
     (id: WindowId) => {
-      interacted.current = true;
+      pendingFocusRef.current = null;
       if (isDesktop) {
         dispatch({ type: "close", id });
       } else {
@@ -116,7 +116,7 @@ export function Desktop() {
   }, []);
 
   const api = useMemo<DeskApi>(
-    () => ({ state, open, close, focus, toggleMax, move, deskRef, interacted }),
+    () => ({ state, open, close, focus, toggleMax, move, deskRef, pendingFocusRef }),
     [state, open, close, focus, toggleMax, move],
   );
 

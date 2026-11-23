@@ -13,7 +13,7 @@ export function renderInDesk(ui: ReactElement, overrides: Partial<DeskApi> = {})
     toggleMax: vi.fn(),
     move: vi.fn(),
     deskRef: createRef<HTMLDivElement>(),
-    interacted: { current: false },
+    pendingFocusRef: { current: null },
     ...overrides,
   };
   return { api, ...render(<DeskContext.Provider value={api}>{ui}</DeskContext.Provider>) };

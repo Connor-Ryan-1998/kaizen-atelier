@@ -10,7 +10,7 @@ import { useIsDesktop } from "./useIsDesktop";
 const TITLE_BAR = 34;
 
 export function WindowFrame({ id, children }: { id: WindowId; children: ReactNode }) {
-  const { state, close, focus, toggleMax, move, deskRef, interacted } = useDesk();
+  const { state, close, focus, toggleMax, move, deskRef, pendingFocusRef } = useDesk();
   const w = getWindow(id);
   const isDesktop = useIsDesktop();
   const reduce = useReducedMotion();
@@ -26,8 +26,11 @@ export function WindowFrame({ id, children }: { id: WindowId; children: ReactNod
   const z = state.open.indexOf(id) + 10;
 
   useEffect(() => {
-    if (isTop && interacted.current) ref.current?.focus({ preventScroll: true });
-  }, [isTop, interacted]);
+    if (isTop && pendingFocusRef.current === id) {
+      pendingFocusRef.current = null;
+      ref.current?.focus({ preventScroll: true });
+    }
+  }, [isTop, id, pendingFocusRef]);
 
   function handleClose() {
     close(id);

@@ -1,4 +1,36 @@
 import { expect, test, type Page } from "@playwright/test";
+import { WINDOWS } from "../lib/windows";
+
+for (const w of WINDOWS.filter((w) => w.indexed && w.route !== "/")) {
+  test(`${w.route} has its own title`, async ({ request }) => {
+    const res = await request.get(w.route);
+    expect(res.status()).toBe(200);
+    expect(await res.text()).toContain(`<title>${w.title} — Kaizen Atelier</title>`);
+  });
+}
+
+test("easter egg routes are noindex", async ({ request }) => {
+  const html = await (await request.get("/trash")).text();
+  expect(html).toMatch(/<meta name="robots" content="noindex/);
+});
+
+test("keyboard: Tab to an icon, Enter opens, Escape closes and returns focus", async ({ page }) => {
+  await page.goto("/");
+  const icon = page.locator('[data-icon="services"]');
+  for (let i = 0; i < 30 && !(await icon.evaluate((el) => el === document.activeElement)); i++) {
+    await page.keyboard.press("Tab");
+  }
+  await expect(icon).toBeFocused();
+  await page.keyboard.press("Enter");
+  const dialog = page.getByRole("dialog", { name: "Services" });
+  await expect(dialog).toBeVisible();
+  await expect
+    .poll(() => dialog.evaluate((el) => el.contains(document.activeElement)))
+    .toBe(true);
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
+  await expect(icon).toBeFocused();
+});
 
 async function zOf(page: Page, name: string) {
   return page
