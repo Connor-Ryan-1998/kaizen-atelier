@@ -10,8 +10,10 @@ export const DEMO_VIDEO_ID: string | null = null;
 
 export const SPAGHETTI = {
   src: "/eggs/spaghetti.jpg",
-  alt: "A plate of spaghetti",
-  credit: "",
-  license: "",
-  sourceUrl: "",
+  alt: "A tangled plate of spaghetti, standing in for a network diagram",
+  credit: "Syced",
+  license: "CC0",
+  sourceUrl: "https://commons.wikimedia.org/wiki/File:Japanese-style_spaghetti_in_Shirokane.jpg",
+  width: 1280,
+  height: 960,
 };
