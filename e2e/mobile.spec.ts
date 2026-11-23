@@ -7,6 +7,16 @@ test("home grid shows all 12 icons and no window", async ({ page }) => {
   await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 
+test("phone back gesture closes the open window", async ({ page }) => {
+  await page.goto("/");
+  await page.locator('[data-icon="pricing"]').tap();
+  await expect(page.getByRole("dialog", { name: "Pricing" })).toBeVisible();
+  await page.goBack();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.locator('[role="dialog"]:visible')).toHaveCount(0);
+  await expect(page.locator("[data-icon]:visible")).toHaveCount(12);
+});
+
 test("tapping an icon opens it full-screen; Back returns home", async ({ page }) => {
   await page.goto("/");
   await page.locator('[data-icon="pricing"]').tap();

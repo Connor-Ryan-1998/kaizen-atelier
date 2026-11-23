@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { Desktop } from "@/components/desktop/Desktop";
+import { HOME_TITLE, TITLE_TEMPLATE } from "@/lib/titles";
 import "./globals.css";
 
 const plexSans = IBM_Plex_Sans({
@@ -17,8 +18,8 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Kaizen Atelier — IT & data consulting",
-    template: "%s — Kaizen Atelier",
+    default: HOME_TITLE,
+    template: TITLE_TEMPLATE,
   },
   description:
     "Data, automation and infrastructure built around how your business actually works.",

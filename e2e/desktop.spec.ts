@@ -104,6 +104,25 @@ test("sticky note greets desktop visitors on / and can be dismissed", async ({ p
   await expect(note).toHaveCount(0);
 });
 
+test("back to / closes non-welcome windows so URL and screen agree", async ({ page }) => {
+  await page.goto("/");
+  await page.locator('[data-icon="services"]').click();
+  await expect(page).toHaveURL(/\/services$/);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("dialog", { name: "Services" })).toHaveCount(0);
+  await expect(page.getByRole("dialog", { name: "welcome.md" })).toBeVisible();
+});
+
+test("tab title follows the focused window", async ({ page }) => {
+  await page.goto("/");
+  await expect(page).toHaveTitle("Kaizen Atelier — IT & data consulting");
+  await page.locator('[data-icon="services"]').click();
+  await expect(page).toHaveTitle("Services — Kaizen Atelier");
+  await page.getByRole("button", { name: "Close Services" }).click();
+  await expect(page).toHaveTitle("Kaizen Atelier — IT & data consulting");
+});
+
 test("legacy #anchor links open the matching window", async ({ page }) => {
   await page.goto("/#process");
   await expect(page).toHaveURL(/\/process$/);

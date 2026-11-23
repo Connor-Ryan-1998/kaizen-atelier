@@ -14,6 +14,7 @@ import {
   useState,
   type RefObject,
 } from "react";
+import { HOME_TITLE, windowTitle } from "@/lib/titles";
 import { focused, initialState, reducer, type DeskState, type Pos } from "@/lib/windowState";
 import { LEGACY_HASHES, WINDOWS, getWindow, windowForPath, type WindowId } from "@/lib/windows";
 import { DesktopIcon } from "./DesktopIcon";
@@ -86,19 +87,25 @@ export function Desktop() {
   const toggleMax = useCallback((id: WindowId) => dispatch({ type: "toggleMax", id }), []);
   const move = useCallback((id: WindowId, pos: Pos) => dispatch({ type: "move", id, pos }), []);
 
-  // Focus -> URL.
+  // Focus -> URL and tab title (pushState does not re-run generateMetadata).
   useEffect(() => {
     if (top === "notFound") return;
     const route = top ? getWindow(top).route : "/";
     if (route !== window.location.pathname) window.history.pushState(null, "", route);
+    document.title = top && top !== "welcome" ? windowTitle(getWindow(top).title) : HOME_TITLE;
   }, [top]);
 
   // URL (back/forward) -> focus. Listen to popstate directly: usePathname does not
-  // reliably update for entries we created with pushState. "/" never re-opens anything.
+  // reliably update for entries we created with pushState.
   useEffect(() => {
     const onPop = () => {
       const path = window.location.pathname;
-      if (path === "/") return;
+      if (path === "/") {
+        // Back to the desktop: close everything except welcome, so the screen matches "/".
+        // On phones welcome is hidden, so this returns to the home grid.
+        for (const w of stateRef.current.open) if (w !== "welcome") dispatch({ type: "close", id: w });
+        return;
+      }
       const id = windowForPath(path);
       if (id !== topRef.current) dispatch({ type: "open", id });
     };
