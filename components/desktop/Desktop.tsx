@@ -11,12 +11,15 @@ import {
   useMemo,
   useReducer,
   useRef,
+  useState,
   type RefObject,
 } from "react";
 import { focused, initialState, reducer, type DeskState, type Pos } from "@/lib/windowState";
 import { LEGACY_HASHES, WINDOWS, getWindow, windowForPath, type WindowId } from "@/lib/windows";
 import { DesktopIcon } from "./DesktopIcon";
 import { MenuBar } from "./MenuBar";
+import { MobileHero } from "./MobileHero";
+import { StickyNote } from "./StickyNote";
 import { useIsDesktop } from "./useIsDesktop";
 import { WindowFrame } from "./WindowFrame";
 import { WINDOW_CONTENT } from "./windowContent";
@@ -46,6 +49,7 @@ export function Desktop() {
   const pathname = usePathname();
   const [state, dispatch] = useReducer(reducer, pathname, (p) => initialState(windowForPath(p)));
   const isDesktop = useIsDesktop();
+  const [showNote] = useState(() => pathname === "/");
   const deskRef = useRef<HTMLDivElement>(null);
   const interacted = useRef(false);
   const top = focused(state);
@@ -125,16 +129,18 @@ export function Desktop() {
     <DeskContext.Provider value={api}>
       <div className="fixed inset-0 flex flex-col">
         <MenuBar />
-        <div ref={deskRef} className="relative flex-1 overflow-hidden">
-          <nav aria-label="Desktop" className="contents">
-            <ul className="absolute left-4 top-4 flex flex-col gap-3">
+        <div ref={deskRef} className="relative flex-1 overflow-hidden max-md:overflow-y-auto">
+          <MobileHero />
+          {/* Desktop: two absolute columns. Phone: both lists flow into one 4-column grid. */}
+          <nav aria-label="Desktop" className="max-md:grid max-md:grid-cols-4 max-md:gap-x-1 max-md:gap-y-3 max-md:px-3 max-md:py-5">
+            <ul className="max-md:contents md:absolute md:left-4 md:top-4 md:flex md:max-h-[calc(100%-2rem)] md:flex-col md:flex-wrap md:gap-x-2 md:gap-y-2">
               {left.map((w) => (
                 <li key={w.id}>
                   <DesktopIcon id={w.id} />
                 </li>
               ))}
             </ul>
-            <ul className="absolute right-4 top-4 flex flex-col gap-3">
+            <ul className="max-md:contents md:absolute md:right-4 md:top-4 md:flex md:max-h-[calc(100%-2rem)] md:flex-col md:flex-wrap-reverse md:gap-x-2 md:gap-y-2">
               {right.map((w) => (
                 <li key={w.id}>
                   <DesktopIcon id={w.id} />
@@ -142,6 +148,7 @@ export function Desktop() {
               ))}
             </ul>
           </nav>
+          {showNote && <StickyNote />}
           <AnimatePresence>
             {openWindows.map((w) => {
               const Content = WINDOW_CONTENT[w.id];

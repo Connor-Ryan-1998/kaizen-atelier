@@ -83,11 +83,12 @@ export function WindowFrame({ id, children }: { id: WindowId; children: ReactNod
       }
       className={
         "absolute flex flex-col overflow-hidden rounded-lg border-[1.5px] border-ink bg-surface shadow-hard-lg outline-none " +
-        "max-md:fixed! max-md:inset-0! max-md:left-0! max-md:top-0! max-md:w-auto! max-md:max-w-none! max-md:max-h-none! max-md:rounded-none max-md:shadow-none " +
+        "max-md:fixed! max-md:inset-0! max-md:left-0! max-md:top-[38px]! max-md:w-auto! max-md:max-w-none! max-md:max-h-none! max-md:rounded-none max-md:shadow-none " +
         (hiddenOnPhone ? "max-md:hidden " : "max-md:z-50! ")
       }
     >
       <div
+        data-titlebar
         onPointerDown={(e) => {
           focus(id);
           if (isDesktop && !maximized) controls.start(e);
@@ -95,7 +96,15 @@ export function WindowFrame({ id, children }: { id: WindowId; children: ReactNod
         style={{ height: TITLE_BAR, touchAction: "none" }}
         className="flex shrink-0 cursor-grab items-center gap-2 border-b-[1.5px] border-ink bg-paper px-2.5 select-none active:cursor-grabbing"
       >
-        <div className="flex gap-1.5">
+        <button
+          type="button"
+          aria-label="Back to home"
+          onClick={handleClose}
+          className="rounded px-1.5 py-0.5 text-sm font-semibold focus-visible:ring-2 focus-visible:ring-vermilion md:hidden"
+        >
+          ← Back
+        </button>
+        <div className="flex gap-1.5 max-md:hidden">
           <button
             type="button"
             aria-label={`Close ${w.title}`}

@@ -46,6 +46,32 @@ test("icons drive the URL; back/forward and close follow focus", async ({ page }
   await expect(page).toHaveURL(/\/pricing$/);
 });
 
+test("a window dragged far off-screen keeps its title bar reachable", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 600 });
+  await page.goto("/about");
+  const dialog = page.getByRole("dialog", { name: "About me" });
+  const title = dialog.locator("[data-titlebar]");
+  const start = (await title.boundingBox())!;
+  await page.mouse.move(start.x + start.width / 2, start.y + 10);
+  await page.mouse.down();
+  await page.mouse.move(-3000, -3000, { steps: 10 });
+  await page.mouse.up();
+  await expect
+    .poll(async () => {
+      const b = (await title.boundingBox())!;
+      return b.x + b.width >= 78 && b.y >= 38;
+    })
+    .toBe(true);
+});
+
+test("sticky note greets desktop visitors on / and can be dismissed", async ({ page }) => {
+  await page.goto("/");
+  const note = page.getByRole("note");
+  await expect(note).toContainText("Dashed icons are");
+  await note.getByRole("button", { name: "Dismiss note" }).click();
+  await expect(note).toHaveCount(0);
+});
+
 test("legacy #anchor links open the matching window", async ({ page }) => {
   await page.goto("/#process");
   await expect(page).toHaveURL(/\/process$/);
