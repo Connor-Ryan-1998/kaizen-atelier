@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { Desktop } from "@/components/desktop/Desktop";
 import "./globals.css";
 
 const plexSans = IBM_Plex_Sans({
@@ -31,6 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${plexSans.variable} ${plexMono.variable} antialiased`}>
+        <Desktop />
         {children}
       </body>
     </html>

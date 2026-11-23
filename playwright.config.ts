@@ -8,10 +8,11 @@ export default defineConfig({
   reporter: "list",
   use: { baseURL },
   webServer: {
-    command: "npx next dev -p 3100",
+    // Production build: deterministic (dev-server on-demand compiles race under parallel tests).
+    command: "npm run build && npx next start -p 3100",
     url: baseURL,
-    reuseExistingServer: true,
-    timeout: 120_000,
+    reuseExistingServer: false,
+    timeout: 300_000,
   },
   projects: [
     {
