@@ -16,6 +16,7 @@ import {
 import { focused, initialState, reducer, type DeskState, type Pos } from "@/lib/windowState";
 import { LEGACY_HASHES, WINDOWS, getWindow, windowForPath, type WindowId } from "@/lib/windows";
 import { DesktopIcon } from "./DesktopIcon";
+import { MenuBar } from "./MenuBar";
 import { useIsDesktop } from "./useIsDesktop";
 import { WindowFrame } from "./WindowFrame";
 import { WINDOW_CONTENT } from "./windowContent";
@@ -123,6 +124,7 @@ export function Desktop() {
   return (
     <DeskContext.Provider value={api}>
       <div className="fixed inset-0 flex flex-col">
+        <MenuBar />
         <div ref={deskRef} className="relative flex-1 overflow-hidden">
           <nav aria-label="Desktop" className="contents">
             <ul className="absolute left-4 top-4 flex flex-col gap-3">
