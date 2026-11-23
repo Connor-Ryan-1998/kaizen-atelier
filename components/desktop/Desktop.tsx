@@ -37,7 +37,7 @@ export interface DeskApi {
   interacted: RefObject<boolean>;
 }
 
-const DeskContext = createContext<DeskApi | null>(null);
+export const DeskContext = createContext<DeskApi | null>(null);
 
 export function useDesk(): DeskApi {
   const ctx = useContext(DeskContext);
