@@ -110,7 +110,7 @@ export const WINDOWS: readonly WindowDef[] = [
     side: "right",
     egg: false,
     indexed: true,
-    description: "Grab 30 minutes on my calendar, or send an email. Either way, you leave with a useful idea.",
+    description: "Grab an hour on my calendar, or send an email. Either way, you leave with a useful idea.",
     size: { w: 720, h: 640 },
   },
   {
