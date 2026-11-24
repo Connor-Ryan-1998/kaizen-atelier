@@ -92,15 +92,23 @@ export function Desktop() {
   useEffect(() => {
     if (top === "notFound") return;
     const route = top ? getWindow(top).route : "/";
-    if (route !== window.location.pathname) window.history.pushState(null, "", route);
+    if (route !== window.location.pathname) {
+      // Welcome brought forward over other windows: mark the entry so Back to it only refocuses.
+      const welcomeOnTop = top === "welcome" && stateRef.current.open.length > 1;
+      window.history.pushState(welcomeOnTop ? { welcomeOnTop } : null, "", route);
+    }
     document.title = top && top !== "welcome" ? windowTitle(getWindow(top).title) : HOME_TITLE;
   }, [top]);
 
   // URL (back/forward) -> focus. Listen to popstate directly: usePathname does not
   // reliably update for entries we created with pushState.
   useEffect(() => {
-    const onPop = () => {
+    const onPop = (e: PopStateEvent) => {
       const path = window.location.pathname;
+      if (path === "/" && e.state?.welcomeOnTop) {
+        dispatch({ type: "open", id: "welcome" });
+        return;
+      }
       if (path === "/") {
         // Back to the desktop: close everything except welcome, so the screen matches "/".
         // On phones welcome is hidden, so this returns to the home grid.

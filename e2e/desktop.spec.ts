@@ -150,6 +150,33 @@ test("back to / closes non-welcome windows so URL and screen agree", async ({ pa
   await expect(page.getByRole("dialog", { name: "welcome.md" })).toBeVisible();
 });
 
+test("back to a / entry made by focusing welcome keeps other windows open", async ({ page }) => {
+  await page.goto("/");
+  await page.locator('[data-icon="about"]').click();
+  // Welcome overlaps About's left side; click each title bar where it is uncovered.
+  await page.getByRole("dialog", { name: "welcome.md" }).locator("[data-titlebar]").click({ position: { x: 300, y: 10 } });
+  await expect(page).toHaveURL(/\/$/);
+  await page.getByRole("dialog", { name: "About me" }).locator("[data-titlebar]").click({ position: { x: 530, y: 10 } });
+  await expect(page).toHaveURL(/\/about$/);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/$/);
+  // A closing window stays in the DOM for its 180ms exit animation; wait it out.
+  await page.waitForTimeout(500);
+  await expect(page.getByRole("dialog", { name: "About me" })).toBeVisible();
+  await expect
+    .poll(async () => (await zOf(page, "welcome.md")) > (await zOf(page, "About me")))
+    .toBe(true);
+});
+
+test("window buttons respond to clicks just off the dot", async ({ page }) => {
+  await page.goto("/services");
+  const close = page.getByRole("button", { name: "Close Services" });
+  const b = (await close.boundingBox())!;
+  const dot = { x: b.x + b.width / 2, y: b.y + b.height / 2 };
+  await page.mouse.click(dot.x, dot.y + 9);
+  await expect(page.getByRole("dialog", { name: "Services" })).toHaveCount(0);
+});
+
 test("tab title follows the focused window", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Kaizen Atelier — IT & data consulting");

@@ -15,6 +15,12 @@ test("close button removes the window", async () => {
   await waitFor(() => expect(screen.queryByRole("dialog", { name: "Services" })).toBeNull());
 });
 
+test("minimise button closes the window", async () => {
+  render(<Desktop />);
+  await userEvent.click(screen.getByRole("button", { name: "Minimise Services" }));
+  await waitFor(() => expect(screen.queryByRole("dialog", { name: "Services" })).toBeNull());
+});
+
 test("Escape inside a window closes it", async () => {
   render(<Desktop />);
   const dialog = screen.getByRole("dialog", { name: "Services" });

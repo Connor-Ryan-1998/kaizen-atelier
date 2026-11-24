@@ -9,6 +9,26 @@ import { useIsDesktop } from "./useIsDesktop";
 
 const TITLE_BAR = 34;
 
+/** 12px traffic-light dot inside a 24px hit area. */
+function DotButton({ label, dot, onClick }: { label: string; dot: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onPointerDown={(e) => e.stopPropagation()}
+      onClick={onClick}
+      className="group grid h-6 w-6 place-items-center rounded-full outline-none"
+    >
+      <span
+        aria-hidden
+        className={
+          "h-3 w-3 rounded-full border-[1.5px] border-ink group-focus-visible:ring-2 group-focus-visible:ring-indigo " + dot
+        }
+      />
+    </button>
+  );
+}
+
 export function WindowFrame({ id, children }: { id: WindowId; children: ReactNode }) {
   const { state, close, focus, toggleMax, move, deskRef, pendingFocusRef } = useDesk();
   const w = getWindow(id);
@@ -107,27 +127,16 @@ export function WindowFrame({ id, children }: { id: WindowId; children: ReactNod
         >
           ← Back
         </button>
-        <div className="flex gap-1.5 max-md:hidden">
-          <button
-            type="button"
-            aria-label={`Close ${w.title}`}
-            onPointerDown={(e) => e.stopPropagation()}
-            onClick={handleClose}
-            className="h-3 w-3 rounded-full border-[1.5px] border-ink bg-vermilion hover:brightness-110 focus-visible:ring-2 focus-visible:ring-indigo"
-          />
-          <button
-            type="button"
-            aria-label={`Maximise ${w.title}`}
-            onPointerDown={(e) => e.stopPropagation()}
-            onClick={() => toggleMax(id)}
-            className="h-3 w-3 rounded-full border-[1.5px] border-ink bg-note hover:brightness-95 focus-visible:ring-2 focus-visible:ring-indigo max-md:hidden"
-          />
-          <span aria-hidden className="h-3 w-3 rounded-full border-[1.5px] border-ink max-md:hidden" />
+        <div className="-mx-1.5 flex max-md:hidden">
+          <DotButton label={`Close ${w.title}`} dot="bg-vermilion group-hover:brightness-110" onClick={handleClose} />
+          <DotButton label={`Maximise ${w.title}`} dot="bg-note group-hover:brightness-95" onClick={() => toggleMax(id)} />
+          {/* Minimise has no dock to go to, so it closes. */}
+          <DotButton label={`Minimise ${w.title}`} dot="bg-surface group-hover:bg-paper" onClick={handleClose} />
         </div>
         <div id={titleId} className="flex-1 truncate text-center font-mono text-[13px] font-semibold">
           {w.title}
         </div>
-        <div className="w-[48px]" aria-hidden />
+        <div className="w-[60px] max-md:w-[48px]" aria-hidden />
       </div>
       <div className="min-h-0 flex-1 overflow-auto px-6 py-5">{children}</div>
     </motion.div>
