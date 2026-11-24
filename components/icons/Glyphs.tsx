@@ -57,7 +57,7 @@ const paths: Partial<Record<IconName, ReactNode>> = {
       <path d="M8.5 11h7M8.5 14h7M8.5 17h4.5" stroke={I} />
     </>
   ),
-  notes: (
+  blog: (
     // notepad + pencil
     <>
       <rect x="4.5" y="4.5" width="12" height="15" rx="1" fill="#FFF3A8" />

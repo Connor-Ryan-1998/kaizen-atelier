@@ -7,7 +7,7 @@ export type WindowId =
   | "pricing"
   | "contact"
   | "cv"
-  | "notes"
+  | "blog"
   | "homelab"
   | "pipelines"
   | "demo"
@@ -101,18 +101,18 @@ export const WINDOWS: readonly WindowDef[] = [
     description: "Pricing: it depends, genuinely. Fixed-price audits, upfront project quotes, monthly support.",
     size: { w: 520, h: 460 },
   },
-  // Right column: act or explore
   {
     id: "contact",
     title: "Contact.exe",
     iconLabel: "Contact.exe",
     route: "/contact",
-    side: "right",
+    side: "left",
     egg: false,
     indexed: true,
     description: "Grab an hour on my calendar, or send an email. Either way, you leave with a useful idea.",
     size: { w: 720, h: 640 },
   },
+  // Right column: act or explore
   {
     id: "cv",
     title: "CV.pdf",
@@ -125,15 +125,15 @@ export const WINDOWS: readonly WindowDef[] = [
     size: { w: 460, h: 320 },
   },
   {
-    id: "notes",
-    title: "Notes",
-    iconLabel: "Notes",
-    route: "/notes",
+    id: "blog",
+    title: "Blog",
+    iconLabel: "Blog",
+    route: "/blog",
     side: "right",
     egg: false,
     indexed: true,
-    description: "Writing about data, automation and homelabs. Coming soon, allegedly.",
-    size: { w: 460, h: 300 },
+    description: "Writing on data, automation and what software really costs. Published on Substack.",
+    size: { w: 520, h: 560 },
   },
   {
     id: "homelab",
@@ -247,7 +247,7 @@ export const MENUS: { label: string; items: MenuItem[] }[] = [
     items: [
       { label: "Contact", id: "contact" },
       { label: "CV", id: "cv" },
-      { label: "Notes", id: "notes" },
+      { label: "Blog", id: "blog" },
       { label: "Trash", id: "trash" },
       { label: "live_demo.mp4", id: "demo" },
     ],

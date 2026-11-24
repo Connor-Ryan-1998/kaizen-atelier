@@ -1,11 +1,11 @@
 import type { ComponentType } from "react";
 import type { WindowId } from "@/lib/windows";
 import { AboutWindow } from "@/components/windows/AboutWindow";
+import { BlogWindow } from "@/components/windows/BlogWindow";
 import { ContactWindow } from "@/components/windows/ContactWindow";
 import { CvWindow } from "@/components/windows/CvWindow";
 import { DemoWindow } from "@/components/windows/DemoWindow";
 import { HomelabWindow } from "@/components/windows/HomelabWindow";
-import { NotesWindow } from "@/components/windows/NotesWindow";
 import { NotFoundWindow } from "@/components/windows/NotFoundWindow";
 import { PipelinesWindow } from "@/components/windows/PipelinesWindow";
 import { PricingWindow } from "@/components/windows/PricingWindow";
@@ -24,7 +24,7 @@ export const WINDOW_CONTENT: Record<WindowId, ComponentType> = {
   pricing: PricingWindow,
   contact: ContactWindow,
   cv: CvWindow,
-  notes: NotesWindow,
+  blog: BlogWindow,
   homelab: HomelabWindow,
   pipelines: PipelinesWindow,
   demo: DemoWindow,

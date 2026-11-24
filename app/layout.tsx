@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { Desktop } from "@/components/desktop/Desktop";
+import { BlogPostsProvider } from "@/components/windows/BlogWindow";
+import { getBlogPosts } from "@/lib/blog";
 import { HOME_TITLE, TITLE_TEMPLATE } from "@/lib/titles";
 import "./globals.css";
 
@@ -25,15 +27,18 @@ export const metadata: Metadata = {
     "Data, automation and infrastructure built around how your business actually works.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const posts = await getBlogPosts();
   return (
     <html lang="en">
       <body className={`${plexSans.variable} ${plexMono.variable} antialiased`}>
-        <Desktop />
+        <BlogPostsProvider posts={posts}>
+          <Desktop />
+        </BlogPostsProvider>
         {children}
       </body>
     </html>

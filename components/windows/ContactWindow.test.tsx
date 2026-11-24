@@ -3,7 +3,6 @@ import { renderInDesk } from "@/components/desktop/testUtils";
 import { BOOKING_EMBED_URL, BOOKING_URL, LINKEDIN_URL, MAILTO } from "@/lib/site";
 import { ContactWindow } from "./ContactWindow";
 import { CvWindow } from "./CvWindow";
-import { NotesWindow } from "./NotesWindow";
 
 const isDesktop = vi.hoisted(() => ({ value: true }));
 vi.mock("@/components/desktop/useIsDesktop", () => ({ useIsDesktop: () => isDesktop.value }));
@@ -29,7 +28,3 @@ test("CV points to LinkedIn", () => {
   expect(screen.getByRole("link", { name: "View on LinkedIn" })).toHaveAttribute("href", LINKEDIN_URL);
 });
 
-test("Notes shows the empty state", () => {
-  renderInDesk(<NotesWindow />);
-  expect(screen.getByText("Drafts: 14. Published: 0.")).toBeInTheDocument();
-});

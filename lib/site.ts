@@ -17,3 +17,8 @@ export const SPAGHETTI = {
   width: 1280,
   height: 960,
 };
+
+/** Connor's Substack: the Blog window lists posts from its RSS feed. */
+export const SUBSTACK_URL = "https://signalfeed.substack.com";
+export const SUBSTACK_FEED_URL = `${SUBSTACK_URL}/feed`;
+export const SUBSTACK_EMBED_URL = `${SUBSTACK_URL}/embed`;
