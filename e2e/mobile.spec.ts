@@ -17,6 +17,12 @@ test("phone back gesture closes the open window", async ({ page }) => {
   await expect(page.locator("[data-icon]:visible")).toHaveCount(12);
 });
 
+test("no workshop illustration on phones", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("[data-icon]:visible")).toHaveCount(12);
+  await expect(page.locator("img[data-workshop]")).toBeHidden();
+});
+
 test("tapping an icon opens it full-screen; Back returns home", async ({ page }) => {
   await page.goto("/");
   await page.locator('[data-icon="pricing"]').tap();

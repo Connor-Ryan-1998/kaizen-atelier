@@ -1,0 +1,263 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1000 500" role="img" aria-label="Cutaway of a little Japanese workshop where craftspeople build data systems">
+  <style>
+    .o { stroke: #1E1B18; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+    .thin { stroke: #1E1B18; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+    .arm-o { fill: none; stroke: #1E1B18; stroke-width: 9; stroke-linecap: round; }
+    .arm { fill: none; stroke: #2C3E63; stroke-width: 5.5; stroke-linecap: round; }
+    .arm.v { stroke: #D24429; }
+    .hand { fill: #E8B48A; stroke: #1E1B18; stroke-width: 1.5; }
+    .cab-o { fill: none; stroke: #1E1B18; stroke-width: 5.5; stroke-linecap: round; }
+    .cab { fill: none; stroke-width: 3; stroke-linecap: round; }
+    .pipe-o { fill: none; stroke: #1E1B18; stroke-width: 20; }
+    .pipe { fill: none; stroke: #5E8C5A; stroke-width: 15; }
+
+    @keyframes drip { 0% { transform: translateY(0); opacity: 0 } 15% { opacity: 1 } 100% { transform: translateY(46px); opacity: 0 } }
+    .drip { animation: drip 1.6s ease-in infinite; }
+    @keyframes rise { 0% { transform: translate(0, 0) scale(.6); opacity: 0 } 25% { opacity: 1 } 100% { transform: translate(6px, -34px) scale(1.2); opacity: 0 } }
+    .puff { animation: rise 3.2s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+    @keyframes wisp { 0%, 100% { opacity: .2; transform: translateY(2px) } 50% { opacity: .9; transform: translateY(-3px) } }
+    .wisp { animation: wisp 2.4s ease-in-out infinite; }
+    @keyframes blink { 0%, 60% { opacity: 1 } 61%, 100% { opacity: .25 } }
+    .led { animation: blink 1.1s steps(1) infinite; }
+    @keyframes sway { 0%, 100% { transform: rotate(-4deg) } 50% { transform: rotate(4deg) } }
+    .lantern { animation: sway 4s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 0; }
+    @keyframes tail { 0%, 100% { transform: rotate(0) } 50% { transform: rotate(14deg) } }
+    .tail { animation: tail 2.8s ease-in-out infinite; transform-box: fill-box; transform-origin: 0 0; }
+    @keyframes zz { 0% { transform: translate(0, 0); opacity: 0 } 30% { opacity: 1 } 100% { transform: translate(-8px, -18px); opacity: 0 } }
+    .z { animation: zz 3s ease-out infinite; }
+    @keyframes plane { 0%, 100% { transform: translateX(-5px) } 50% { transform: translateX(5px) } }
+    .planing { animation: plane 1.4s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+
+  <defs>
+    <pattern id="planks" width="45" height="10" patternUnits="userSpaceOnUse">
+      <rect width="45" height="10" fill="#FBF7EF" />
+      <line x1="1" y1="0" x2="1" y2="10" stroke="#EADBC0" stroke-width="2" />
+    </pattern>
+
+    <!-- Craftsperson without arms. Origin = between the feet. Coat colour comes from the <use> fill. -->
+    <g id="kp">
+      <path d="M-8 -26 V-4 M8 -26 V-4" stroke="#1E1B18" stroke-width="10" stroke-linecap="round" fill="none" />
+      <path d="M-8 -26 V-4 M8 -26 V-4" stroke="#4A4038" stroke-width="6" stroke-linecap="round" fill="none" />
+      <ellipse cx="-9" cy="-1.5" rx="7" ry="3.5" fill="#1E1B18" />
+      <ellipse cx="9" cy="-1.5" rx="7" ry="3.5" fill="#1E1B18" />
+      <path class="o" d="M-15 -60 Q0 -64 15 -60 L18 -20 Q0 -17 -18 -20 Z" />
+      <path d="M-6 -61 L-3 -21 M6 -61 L3 -21" stroke="#FBF7EF" stroke-width="3" fill="none" />
+      <rect class="o" x="-17.5" y="-37" width="35" height="6" fill="#FFF3A8" stroke-width="2" />
+      <circle class="o" cy="-74" r="13" fill="#E8B48A" />
+      <path d="M-13 -75 A13 13 0 0 1 13 -75 Q0 -81 -13 -75 Z" fill="#1E1B18" />
+      <path d="M-13.5 -79 Q0 -85 13.5 -79" stroke="#FBF7EF" stroke-width="4" fill="none" />
+      <circle class="thin" cx="13.5" cy="-80" r="2.6" fill="#D24429" />
+      <circle cx="-4.5" cy="-72" r="1.7" fill="#1E1B18" />
+      <circle cx="4.5" cy="-72" r="1.7" fill="#1E1B18" />
+      <circle cx="-8.5" cy="-67.5" r="2.2" fill="#E07A5F" opacity=".55" />
+      <circle cx="8.5" cy="-67.5" r="2.2" fill="#E07A5F" opacity=".55" />
+      <path d="M-3 -66.5 Q0 -64 3 -66.5" stroke="#1E1B18" stroke-width="1.5" fill="none" stroke-linecap="round" />
+    </g>
+  </defs>
+
+  <!-- ground + shadow -->
+  <ellipse cx="485" cy="472" rx="460" ry="7" fill="#1E1B18" opacity=".08" />
+  <line class="o" x1="10" y1="470" x2="990" y2="470" />
+  <path class="thin" fill="none" d="M24 470 l4 -8 l3 8 M38 470 l3 -6 l3 6 M960 470 l3 -7 l3 7 M975 470 l4 -9 l3 9" stroke="#5E8C5A" />
+
+  <!-- chimney + steam -->
+  <rect class="o" x="872" y="125" width="26" height="110" fill="#8B6440" />
+  <rect class="o" x="866" y="118" width="38" height="10" fill="#1E1B18" />
+  <circle class="o puff" cx="884" cy="106" r="7" fill="#FBF7EF" />
+  <circle class="o puff" cx="890" cy="90" r="9" fill="#FBF7EF" style="animation-delay:-1.1s" />
+  <circle class="o puff" cx="882" cy="72" r="6" fill="#FBF7EF" style="animation-delay:-2.2s" />
+
+  <!-- saw-tooth roof with clerestory glazing -->
+  <g>
+    <path class="o" fill="#C9A16E" d="M60 232 L260 150 V232 Z M260 232 L460 150 V232 Z M460 232 L660 150 V232 Z M660 232 L860 150 V232 Z" />
+    <path stroke="#8B6440" stroke-width="2" fill="none" d="
+      M110 212 H248 M160 191 H248 M210 171 H248
+      M310 212 H448 M360 191 H448 M410 171 H448
+      M510 212 H648 M560 191 H648 M610 171 H648
+      M710 212 H848 M760 191 H848 M810 171 H848" />
+    <rect class="thin" x="250" y="154" width="10" height="78" fill="#FFF3A8" />
+    <rect class="thin" x="450" y="154" width="10" height="78" fill="#FFF3A8" />
+    <rect class="thin" x="650" y="154" width="10" height="78" fill="#FFF3A8" />
+    <rect class="thin" x="850" y="154" width="10" height="78" fill="#FFF3A8" />
+  </g>
+
+  <!-- interior back wall, tie beam, floor -->
+  <rect x="182" y="245" width="714" height="210" fill="url(#planks)" />
+  <rect class="o" x="60" y="230" width="848" height="15" fill="#8B6440" />
+  <rect class="o" x="60" y="455" width="848" height="15" fill="#C9A16E" />
+  <rect class="o" x="182" y="245" width="714" height="210" fill="none" />
+
+  <!-- facade bay (left, not cut away) -->
+  <rect class="o" x="60" y="245" width="110" height="210" fill="#FBF7EF" />
+  <rect class="o" x="85" y="262" width="60" height="40" fill="#2C3E63" />
+  <path stroke="#FBF7EF" stroke-width="2" d="M105 262 V302 M125 262 V302 M85 282 H145" />
+  <path class="o" fill="#2C3E63" d="M82 316 H104 V348 H82 Z M106 316 H124 V348 H106 Z M126 316 H148 V348 H126 Z" />
+  <circle class="thin" cx="115" cy="330" r="7" fill="#FBF7EF" />
+  <rect class="o" x="90" y="352" width="50" height="103" fill="#D24429" />
+  <path class="thin" fill="none" d="M115 352 V455 M90 386 H140 M90 420 H140" />
+  <circle cx="132" cy="405" r="2.2" fill="#1E1B18" />
+  <!-- cut post + right post -->
+  <rect class="o" x="170" y="245" width="12" height="210" fill="#8B6440" />
+  <rect class="o" x="896" y="245" width="12" height="210" fill="#8B6440" />
+
+  <!-- lanterns -->
+  <g class="lantern">
+    <line class="thin" x1="255" y1="245" x2="255" y2="262" />
+    <rect class="thin" x="249" y="260" width="12" height="4" fill="#1E1B18" />
+    <ellipse class="o" cx="255" cy="279" rx="12" ry="16" fill="#D24429" />
+    <path stroke="#B8361D" stroke-width="1.5" fill="none" d="M244 273 H266 M243 279 H267 M244 285 H266" />
+    <rect class="thin" x="249" y="294" width="12" height="4" fill="#1E1B18" />
+  </g>
+  <g class="lantern" style="animation-delay:-2s">
+    <line class="thin" x1="735" y1="245" x2="735" y2="262" />
+    <rect class="thin" x="729" y="260" width="12" height="4" fill="#1E1B18" />
+    <ellipse class="o" cx="735" cy="279" rx="12" ry="16" fill="#D24429" />
+    <path stroke="#B8361D" stroke-width="1.5" fill="none" d="M724 273 H746 M723 279 H747 M724 285 H746" />
+    <rect class="thin" x="729" y="294" width="12" height="4" fill="#1E1B18" />
+  </g>
+
+  <!-- ===== tea break ===== -->
+  <rect class="o" x="190" y="328" width="56" height="6" fill="#8B6440" />
+  <ellipse class="o" cx="206" cy="318" rx="11" ry="9" fill="#D24429" />
+  <path class="o" fill="none" d="M216 316 l8 -6 M200 309 q6 -6 12 0" />
+  <rect class="thin" x="226" y="318" width="8" height="10" fill="#FBF7EF" />
+  <rect class="thin" x="237" y="318" width="8" height="10" fill="#FBF7EF" />
+  <g transform="translate(222 455) scale(1.1)">
+    <use href="#kp" fill="#2C3E63" />
+    <path class="arm-o" d="M-14 -56 Q-20 -40 -18 -30" /><path class="arm" d="M-14 -56 Q-20 -40 -18 -30" /><circle class="hand" cx="-18" cy="-30" r="3.8" />
+    <path class="arm-o" d="M14 -56 Q24 -42 10 -42" /><path class="arm" d="M14 -56 Q24 -42 10 -42" />
+    <rect class="thin" x="3" y="-51" width="11" height="10" rx="1.5" fill="#FBF7EF" />
+    <circle class="hand" cx="10" cy="-42" r="3.8" />
+    <path class="wisp" stroke="#6E655A" stroke-width="1.5" fill="none" stroke-linecap="round" d="M6 -55 q-3 -4 0 -8 q3 -4 0 -8 M11 -55 q-3 -4 0 -8" />
+  </g>
+
+  <!-- ===== blueprint ===== -->
+  <g>
+    <rect class="thin" x="342" y="268" width="22" height="22" fill="#FFF3A8" transform="rotate(-6 353 279)" />
+    <rect class="thin" x="370" y="272" width="22" height="22" fill="#FFF3A8" transform="rotate(5 381 283)" />
+    <rect class="thin" x="397" y="266" width="22" height="22" fill="#D24429" transform="rotate(-3 408 277)" />
+    <rect class="thin" x="356" y="298" width="22" height="22" fill="#FFF3A8" transform="rotate(4 367 309)" />
+    <rect class="thin" x="384" y="300" width="22" height="22" fill="#FFF3A8" transform="rotate(-7 395 311)" />
+    <path stroke="#6E655A" stroke-width="1.2" fill="none" d="M347 276 h12 M347 281 h9 M375 280 h12 M375 285 h8 M361 306 h12 M361 311 h7 M389 308 h12 M389 313 h9" />
+    <path stroke="#FBF7EF" stroke-width="1.2" fill="none" d="M402 274 h12 M402 279 h8" />
+  </g>
+  <path class="o" fill="none" d="M345 400 L338 455 M402 400 L409 455" />
+  <path class="o" fill="#C9A16E" d="M332 402 H413 L405 352 H340 Z" />
+  <path class="thin" fill="#2C3E63" d="M339 396 H406 L400 358 H345 Z" />
+  <path stroke="#FBF7EF" stroke-width="1.2" fill="none" stroke-linejoin="round" d="M358 388 V374 L372 365 L386 374 V388 Z M366 388 V379 H378 V388 M352 391 H392" />
+  <g transform="translate(300 455) scale(1.1)">
+    <use href="#kp" fill="#D24429" />
+    <path class="arm-o" d="M-14 -56 Q-27 -44 -17 -36" /><path class="arm v" d="M-14 -56 Q-27 -44 -17 -36" /><circle class="hand" cx="-17" cy="-36" r="3.8" />
+    <path class="arm-o" d="M14 -56 Q30 -54 38 -62" /><path class="arm v" d="M14 -56 Q30 -54 38 -62" />
+    <path d="M37 -62 l7 -9" stroke="#1E1B18" stroke-width="4.5" stroke-linecap="round" />
+    <path d="M37 -62 l7 -9" stroke="#FFF3A8" stroke-width="2.5" stroke-linecap="round" />
+    <circle class="hand" cx="38" cy="-62" r="3.8" />
+  </g>
+
+  <!-- ===== carpenter ===== -->
+  <rect class="o" x="450" y="276" width="130" height="7" fill="#8B6440" />
+  <rect class="thin" x="462" y="283" width="6" height="22" fill="#D24429" />
+  <path class="thin" fill="#B9B4AA" d="M457 305 H473 L475 338 H455 Z" />
+  <path stroke="#1E1B18" stroke-width="1" fill="none" d="M455 334 l2 3 l2 -3 l2 3 l2 -3 l2 3 l2 -3 l2 3 l2 -3 l2 3" />
+  <rect class="thin" x="499" y="283" width="4" height="34" fill="#C9A16E" />
+  <rect class="thin" x="491" y="313" width="20" height="9" fill="#1E1B18" />
+  <rect class="thin" x="528" y="283" width="6" height="16" fill="#C9A16E" />
+  <rect class="thin" x="529" y="299" width="4" height="18" fill="#B9B4AA" />
+  <path class="thin" fill="#B9B4AA" d="M552 283 h5 v30 h20 v5 h-25 Z" />
+  <g transform="translate(510 455) scale(1.1)">
+    <use href="#kp" fill="#2C3E63" />
+  </g>
+  <!-- bench in front of the carpenter's legs -->
+  <path class="o" fill="none" d="M452 430 V455 M572 430 V455" stroke-width="5" />
+  <rect class="o" x="440" y="420" width="145" height="10" fill="#8B6440" />
+  <rect class="o" x="448" y="410" width="130" height="10" fill="#E2C59B" />
+  <path stroke="#C9A16E" stroke-width="1.2" fill="none" d="M458 414 q20 -2 40 1 q22 2 44 -1 M470 417 q30 2 60 0" />
+  <g class="planing">
+    <rect class="o" x="516" y="400" width="28" height="10" rx="2" fill="#8B6440" />
+    <g transform="translate(510 455) scale(1.1)">
+      <path class="arm-o" d="M-14 -56 Q-4 -44 12 -48" /><path class="arm" d="M-14 -56 Q-4 -44 12 -48" /><circle class="hand" cx="12" cy="-48" r="3.8" />
+      <path class="arm-o" d="M14 -56 Q24 -52 25 -48" /><path class="arm" d="M14 -56 Q24 -52 25 -48" /><circle class="hand" cx="25" cy="-48" r="3.8" />
+    </g>
+  </g>
+  <path stroke="#C9A16E" stroke-width="2.2" fill="none" stroke-linecap="round" d="M550 400 q6 -9 11 -1 q-3 5 -7 1 M566 392 q6 -8 10 0 q-3 4 -6 1 M560 448 q6 -8 11 0 q-3 4 -7 1 M584 450 q5 -7 9 0" />
+
+  <!-- ===== server rack + cat + spaghetti ===== -->
+  <rect class="o" x="608" y="340" width="64" height="115" fill="#8B6440" />
+  <rect class="thin" x="616" y="350" width="48" height="96" fill="#1E1B18" />
+  <g fill="#4A4038">
+    <rect x="620" y="356" width="40" height="12" /><rect x="620" y="374" width="40" height="12" />
+    <rect x="620" y="392" width="40" height="12" /><rect x="620" y="410" width="40" height="12" />
+    <rect x="620" y="428" width="40" height="12" />
+  </g>
+  <circle class="led" cx="654" cy="362" r="2.2" fill="#5E8C5A" />
+  <circle class="led" cx="654" cy="380" r="2.2" fill="#D24429" style="animation-delay:-.4s" />
+  <circle class="led" cx="654" cy="398" r="2.2" fill="#FFF3A8" style="animation-delay:-.7s" />
+  <circle class="led" cx="654" cy="416" r="2.2" fill="#5E8C5A" style="animation-delay:-.2s" />
+  <circle class="led" cx="654" cy="434" r="2.2" fill="#D24429" style="animation-delay:-.9s" />
+  <g>
+    <path class="cab-o" d="M626 362 C598 366 588 392 610 398 S642 380 630 418 S598 450 618 452 S662 440 652 455" />
+    <path class="cab" stroke="#D24429" d="M626 362 C598 366 588 392 610 398 S642 380 630 418 S598 450 618 452 S662 440 652 455" />
+    <path class="cab-o" d="M640 380 C676 386 598 420 624 430 S684 424 662 448 S608 456 592 444" />
+    <path class="cab" stroke="#7FA7D9" d="M640 380 C676 386 598 420 624 430 S684 424 662 448 S608 456 592 444" />
+    <path class="cab-o" d="M630 398 C588 404 582 440 604 446 S640 456 656 440" />
+    <path class="cab" stroke="#5E8C5A" d="M630 398 C588 404 582 440 604 446 S640 456 656 440" />
+    <path class="cab-o" d="M646 416 C676 424 684 452 662 455 S598 446 612 436" />
+    <path class="cab" stroke="#FFF3A8" d="M646 416 C676 424 684 452 662 455 S598 446 612 436" />
+  </g>
+  <!-- cat asleep on the warm rack -->
+  <path class="o tail" fill="none" stroke-width="7" d="M659 334 Q675 338 673 352 Q671 362 678 368" />
+  <path class="tail" fill="none" stroke="#D9A066" stroke-width="3.5" stroke-linecap="round" d="M659 334 Q675 338 673 352 Q671 362 678 368" />
+  <ellipse class="o" cx="642" cy="331" rx="20" ry="10" fill="#D9A066" />
+  <path stroke="#8B6440" stroke-width="2" fill="none" d="M636 323 q2 6 0 12 M645 322 q2 6 0 13 M654 324 q2 5 0 11" />
+  <path class="o" fill="#D9A066" d="M612 326 l2 -11 l6 6 Z M622 322 l5 -10 l4 9 Z" />
+  <circle class="o" cx="622" cy="331" r="10" fill="#D9A066" />
+  <path stroke="#1E1B18" stroke-width="1.5" fill="none" stroke-linecap="round" d="M615 331 q2.5 2 5 0 M624 331 q2.5 2 5 0" />
+  <text class="z" x="606" y="312" font-family="ui-monospace, monospace" font-size="11" font-weight="700" fill="#2C3E63">z</text>
+  <text class="z" x="606" y="312" font-family="ui-monospace, monospace" font-size="8" font-weight="700" fill="#2C3E63" style="animation-delay:-1.5s">z</text>
+  <!-- confused IT craftsperson -->
+  <g transform="translate(697 455) scale(1.1)">
+    <use href="#kp" fill="#2C3E63" />
+    <path class="arm-o" d="M-14 -56 Q-30 -52 -36 -44" /><path class="arm" d="M-14 -56 Q-30 -52 -36 -44" /><circle class="hand" cx="-36" cy="-44" r="3.8" />
+    <path class="arm-o" d="M14 -56 Q30 -66 12 -84" /><path class="arm" d="M14 -56 Q30 -66 12 -84" /><circle class="hand" cx="12" cy="-84" r="3.8" />
+  </g>
+
+  <!-- ===== leaky pipe + plumbers ===== -->
+  <path class="pipe-o" d="M910 276 H802 Q790 276 790 288 V370" />
+  <path class="pipe" d="M910 276 H802 Q790 276 790 288 V370" />
+  <rect class="o" x="776" y="364" width="28" height="9" fill="#3F6B3C" />
+  <circle class="o" cx="858" cy="262" r="9" fill="#FBF7EF" />
+  <line x1="858" y1="262" x2="864" y2="257" stroke="#D24429" stroke-width="2" stroke-linecap="round" />
+  <line class="thin" x1="858" y1="271" x2="858" y2="276" />
+  <rect class="drip" x="788" y="378" width="4" height="6" rx="2" fill="#7FA7D9" />
+  <rect class="drip" x="788" y="378" width="4" height="6" rx="2" fill="#7FA7D9" style="animation-delay:-.55s" />
+  <rect class="drip" x="788" y="378" width="4" height="6" rx="2" fill="#7FA7D9" style="animation-delay:-1.1s" />
+  <path class="o" fill="none" d="M778 428 Q791 412 804 428" stroke-width="2" />
+  <path class="o" fill="#B9B4AA" d="M775 428 H807 L802 455 H780 Z" />
+  <ellipse cx="791" cy="430" rx="14" ry="2.5" fill="#7FA7D9" />
+  <g transform="translate(755 455) scale(1.1)">
+    <use href="#kp" fill="#2C3E63" />
+    <path class="arm-o" d="M-14 -56 Q-20 -40 -18 -30" /><path class="arm" d="M-14 -56 Q-20 -40 -18 -30" /><circle class="hand" cx="-18" cy="-30" r="3.8" />
+    <path class="arm-o" d="M14 -56 Q28 -60 30 -72" /><path class="arm" d="M14 -56 Q28 -60 30 -72" />
+    <path class="thin" fill="#B9B4AA" d="M28 -70 l3 -12 l-3 -3 l4 -1 l3 3 l2 -3 l2 3 l-5 2 l-3 11 Z" />
+    <circle class="hand" cx="30" cy="-72" r="3.8" />
+  </g>
+  <g transform="translate(845 455) scale(1.1)">
+    <use href="#kp" fill="#D24429" />
+  </g>
+  <path class="pipe-o" d="M807 400 H838" />
+  <path class="pipe" d="M807 400 H838" />
+  <g transform="translate(845 455) scale(1.1)">
+    <path class="arm-o" d="M-14 -56 Q-26 -48 -30 -50" /><path class="arm v" d="M-14 -56 Q-26 -48 -30 -50" /><circle class="hand" cx="-30" cy="-50" r="3.8" />
+    <path class="arm-o" d="M14 -56 Q6 -44 -10 -50" /><path class="arm v" d="M14 -56 Q6 -44 -10 -50" /><circle class="hand" cx="-10" cy="-50" r="3.8" />
+  </g>
+
+  <!-- bonsai outside -->
+  <path class="o" fill="#2C3E63" d="M930 452 H972 L966 470 H936 Z" />
+  <path class="o" fill="none" stroke-width="5" d="M951 452 Q946 436 956 428 Q964 420 954 410" />
+  <path stroke="#8B6440" stroke-width="2.5" fill="none" stroke-linecap="round" d="M951 452 Q946 436 956 428 Q964 420 954 410" />
+  <circle class="o" cx="944" cy="418" r="11" fill="#5E8C5A" />
+  <circle class="o" cx="962" cy="408" r="12" fill="#5E8C5A" />
+  <circle class="o" cx="952" cy="400" r="10" fill="#5E8C5A" />
+</svg>

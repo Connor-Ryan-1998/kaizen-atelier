@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Desktop screens with room for the workshop illustration. */
+@custom-variant roomy (@media (min-width: 1024px) and (min-height: 640px));
+
 @theme {
   --color-paper: #f2ebdd;
   --color-surface: #fbf7ef;

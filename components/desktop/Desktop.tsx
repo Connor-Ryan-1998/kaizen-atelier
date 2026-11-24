@@ -21,6 +21,7 @@ import { DesktopIcon } from "./DesktopIcon";
 import { MenuBar } from "./MenuBar";
 import { MobileHero } from "./MobileHero";
 import { StickyNote } from "./StickyNote";
+import { WorkshopScene } from "./WorkshopScene";
 import { useIsDesktop } from "./useIsDesktop";
 import { WindowFrame } from "./WindowFrame";
 import { WINDOW_CONTENT } from "./windowContent";
@@ -137,6 +138,7 @@ export function Desktop() {
       <div className="fixed inset-0 flex flex-col">
         <MenuBar />
         <div ref={deskRef} className="relative flex-1 overflow-hidden max-md:overflow-y-auto">
+          <WorkshopScene />
           <MobileHero />
           {/* Desktop: two absolute columns. Phone: both lists flow into one 4-column grid. */}
           <nav aria-label="Desktop" className="max-md:grid max-md:grid-cols-4 max-md:gap-x-1 max-md:gap-y-3 max-md:px-3 max-md:py-5">

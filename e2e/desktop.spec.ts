@@ -9,6 +9,42 @@ for (const w of WINDOWS.filter((w) => w.indexed && w.route !== "/")) {
   });
 }
 
+test("workshop illustration shows on roomy screens, behind the welcome window", async ({ page, request }) => {
+  await page.goto("/");
+  const scene = page.locator("img[data-workshop]");
+  await expect(scene).toBeVisible();
+  const z = (sel: string) => page.locator(sel).first().evaluate((el) => Number(getComputedStyle(el).zIndex) || 0);
+  expect(await z("img[data-workshop]")).toBeLessThan(await z('[role="dialog"]'));
+  const res = await request.get("/desk/workshop.svg");
+  expect(res.status()).toBe(200);
+  expect(res.headers()["content-type"]).toContain("image/svg+xml");
+});
+
+test("icons over the illustration stay clickable", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 640 });
+  await page.goto("/");
+  const scene = page.locator("img[data-workshop]");
+  await expect(scene).toBeVisible();
+  const hit = await scene.evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    return document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2) === el;
+  });
+  expect(hit).toBe(false);
+  await page.locator('[data-icon="pricing"]').click();
+  await expect(page.getByRole("dialog", { name: "Pricing" })).toBeVisible();
+});
+
+test("illustration hidden when the window is too small, shown again when it grows", async ({ page }) => {
+  const scene = page.locator("img[data-workshop]");
+  for (const [width, height] of [[1023, 800], [1280, 639]]) {
+    await page.setViewportSize({ width, height });
+    await page.goto("/");
+    await expect(scene).toBeHidden();
+  }
+  await page.setViewportSize({ width: 1024, height: 640 });
+  await expect(scene).toBeVisible();
+});
+
 test("easter egg routes are noindex", async ({ request }) => {
   const html = await (await request.get("/trash")).text();
   expect(html).toMatch(/<meta name="robots" content="noindex/);
