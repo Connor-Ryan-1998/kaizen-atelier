@@ -1,9 +1,10 @@
 import type { NextConfig } from "next";
 
+// Static export served as Cloudflare Worker assets (see wrangler.jsonc).
+// Redirects live in public/_redirects; images ship unoptimised.
 const nextConfig: NextConfig = {
-  async redirects() {
-    return [{ source: "/notes", destination: "/blog", permanent: true }];
-  },
+  output: "export",
+  images: { unoptimized: true },
 };
 
 export default nextConfig;
