@@ -38,7 +38,6 @@ describe("parseFeed", () => {
   });
 });
 
-
 const SNAP: BlogPost[] = [
   { title: "From snapshot", subtitle: null, href: "https://signalfeed.substack.com/p/snap", isoDate: "2026-10-01T00:00:00.000Z", date: "1 Oct 2026" },
 ];
@@ -56,7 +55,7 @@ describe("getBlogPosts", () => {
   test("fetches the feed without Next revalidation", async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(FEED));
     stubFetch(fetchMock);
-    const posts = await getBlogPosts(SNAP);
+    const posts = await getBlogPosts([...SNAP]);
     expect(posts).toHaveLength(2);
     expect(fetchMock.mock.calls[0][0]).toBe(SUBSTACK_FEED_URL);
     expect(fetchMock.mock.calls[0][1].next).toBeUndefined();
@@ -65,7 +64,7 @@ describe("getBlogPosts", () => {
   test("sends browser-like User-Agent and Accept headers", async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(FEED));
     stubFetch(fetchMock);
-    await getBlogPosts(SNAP);
+    await getBlogPosts([...SNAP]);
     const headers = fetchMock.mock.calls[0][1].headers;
     expect(headers["User-Agent"]).toMatch(/Mozilla\/5\.0/);
     expect(headers["Accept"]).toContain("application/rss+xml");
@@ -75,7 +74,7 @@ describe("getBlogPosts", () => {
     production();
     const fetchMock = vi.fn().mockRejectedValueOnce(new Error("timeout")).mockResolvedValue(new Response(FEED));
     stubFetch(fetchMock);
-    expect(await getBlogPosts(SNAP)).toHaveLength(2);
+    expect(await getBlogPosts([...SNAP])).toHaveLength(2);
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
@@ -84,7 +83,7 @@ describe("getBlogPosts", () => {
     vi.spyOn(console, "warn").mockImplementation(() => {});
     const fetchMock = vi.fn().mockResolvedValue(new Response("", { status: 403 }));
     stubFetch(fetchMock);
-    expect(await getBlogPosts(SNAP)).toEqual(SNAP);
+    expect(await getBlogPosts([...SNAP])).toEqual(SNAP);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
@@ -92,7 +91,7 @@ describe("getBlogPosts", () => {
     production();
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     stubFetch(vi.fn().mockRejectedValue(new Error("timeout")));
-    expect(await getBlogPosts(SNAP)).toEqual(SNAP);
+    expect(await getBlogPosts([...SNAP])).toEqual(SNAP);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("snapshot"));
   });
 
@@ -112,7 +111,7 @@ describe("getBlogPosts", () => {
     production();
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     stubFetch(vi.fn().mockImplementation(async () => new Response("<html><title>Just a moment...</title></html>", { status: 200 })));
-    expect(await getBlogPosts(SNAP)).toEqual(SNAP);
+    expect(await getBlogPosts([...SNAP])).toEqual(SNAP);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("snapshot"));
   });
 
@@ -122,21 +121,52 @@ describe("getBlogPosts", () => {
     await expect(getBlogPosts([])).rejects.toThrow("no posts");
   });
 
+  test("production: a 403 with an empty snapshot throws the 403", async () => {
+    production();
+    stubFetch(vi.fn().mockImplementation(async () => new Response("", { status: 403 })));
+    await expect(getBlogPosts([])).rejects.toThrow("403");
+  });
+
+  test("production: warns once per snapshot, as a GitHub Actions annotation", async () => {
+    production();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    stubFetch(vi.fn().mockRejectedValue(new Error("timeout")));
+    const snap = [...SNAP];
+    await getBlogPosts(snap);
+    await getBlogPosts(snap);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("::warning::"));
+  });
+
+  test("production: drops malformed snapshot entries", async () => {
+    production();
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    stubFetch(vi.fn().mockRejectedValue(new Error("timeout")));
+    const messy = [...SNAP, { title: 42 }, null] as unknown as BlogPost[];
+    expect(await getBlogPosts(messy)).toEqual(SNAP);
+  });
+
+  test("production: throws when every snapshot entry is malformed", async () => {
+    production();
+    stubFetch(vi.fn().mockRejectedValue(new Error("timeout")));
+    await expect(getBlogPosts([{ title: 42 }] as unknown as BlogPost[])).rejects.toThrow("timeout");
+  });
+
   test("production: live posts win over the snapshot", async () => {
     production();
     stubFetch(vi.fn().mockResolvedValue(new Response(FEED)));
-    const posts = await getBlogPosts(SNAP);
+    const posts = await getBlogPosts([...SNAP]);
     expect(posts).toHaveLength(2);
     expect(posts[0].title).not.toBe("From snapshot");
   });
 
   test("non-production ignores the snapshot when the fetch rejects", async () => {
     stubFetch(vi.fn().mockRejectedValue(new Error("timeout")));
-    expect(await getBlogPosts(SNAP)).toEqual([]);
+    expect(await getBlogPosts([...SNAP])).toEqual([]);
   });
 
   test("non-production returns [] when response not ok", async () => {
     stubFetch(vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
-    expect(await getBlogPosts(SNAP)).toEqual([]);
+    expect(await getBlogPosts([...SNAP])).toEqual([]);
   });
 });

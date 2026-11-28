@@ -25,6 +25,13 @@ describe("writeSnapshot", () => {
     expect(readFileSync(file, "utf8")).toBe(JSON.stringify([POST], null, 2) + "\n");
   });
 
+  test("retries the fetch once after a transient failure", async () => {
+    const file = tempFile();
+    const fetchFn = vi.fn().mockRejectedValueOnce(new Error("blip")).mockResolvedValue([POST]);
+    expect(await writeSnapshot(file, fetchFn)).toBe(1);
+    expect(fetchFn).toHaveBeenCalledTimes(2);
+  });
+
   test("leaves the existing file untouched when the fetch rejects", async () => {
     const file = tempFile('[{"title":"old"}]');
     await expect(writeSnapshot(file, async () => Promise.reject(new Error("blocked")))).rejects.toThrow("blocked");

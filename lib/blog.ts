@@ -60,6 +60,16 @@ const FEED_HEADERS = {
 
 const SNAPSHOT = snapshotJson as BlogPost[];
 
+/** Guards the committed snapshot: a hand-edited or corrupt entry is skipped rather than crashing the render. */
+function isBlogPost(p: unknown): p is BlogPost {
+  if (typeof p !== "object" || p === null) return false;
+  const o = p as Record<string, unknown>;
+  return typeof o.title === "string" && typeof o.href === "string" && typeof o.date === "string" && typeof o.isoDate === "string";
+}
+
+// getBlogPosts runs once per exported page; warn once per snapshot, not once per page.
+const warned = new WeakSet<BlogPost[]>();
+
 class FeedStatusError extends Error {
   readonly status: number;
   constructor(status: number) {
@@ -80,7 +90,7 @@ export async function fetchPosts(): Promise<BlogPost[]> {
 /**
  * Latest posts, fetched at build time (the site is a static export rebuilt daily).
  * Substack blocks some build-server IPs (HTTP 403), so in a production build a failed live fetch falls back
- * to lib/feed-snapshot.json (refresh with `npm run snapshot`) and warns; it throws only if the snapshot is empty.
+ * to lib/feed-snapshot.json (refresh with `npm run snapshot`) and warns; it throws only if the snapshot has no usable posts.
  * Elsewhere (dev, tests) a failure gives no posts so working offline still renders.
  * Called once per exported page (root layout), so one retry keeps a single blip from failing the build;
  * a 403 is deterministic, so it isn't retried.
@@ -93,8 +103,13 @@ export async function getBlogPosts(snapshot: BlogPost[] = SNAPSHOT): Promise<Blo
     });
   } catch (err) {
     if (process.env.NODE_ENV !== "production") return [];
-    if (snapshot.length === 0) throw err;
-    console.warn(`Substack feed unavailable (${(err as Error).message}); using lib/feed-snapshot.json`);
-    return snapshot;
+    const usable = snapshot.filter(isBlogPost);
+    if (usable.length === 0) throw err;
+    if (!warned.has(snapshot)) {
+      warned.add(snapshot);
+      // `::warning::` shows as an annotation in GitHub Actions; it is just text elsewhere.
+      console.warn(`::warning::Substack feed unavailable (${(err as Error).message}); using lib/feed-snapshot.json`);
+    }
+    return usable;
   }
 }

@@ -4,9 +4,12 @@ import { writeFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { fetchPosts, type BlogPost } from "../lib/blog.ts";
 
-/** Writes the posts to `path` and returns how many. Throws, leaving the file untouched, if there are none. */
+/**
+ * Writes the posts to `path` and returns how many. Retries the fetch once; if it still fails, or there are
+ * no posts, throws and leaves the file untouched.
+ */
 export async function writeSnapshot(path: string, fetchFn: () => Promise<BlogPost[]> = fetchPosts): Promise<number> {
-  const posts = await fetchFn();
+  const posts = await fetchFn().catch(fetchFn);
   if (posts.length === 0) throw new Error("Feed returned no posts; keeping the existing snapshot");
   writeFileSync(path, JSON.stringify(posts, null, 2) + "\n");
   return posts.length;

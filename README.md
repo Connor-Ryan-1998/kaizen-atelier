@@ -33,8 +33,8 @@ The site is a static export (`out/`) served as a Cloudflare Worker's static asse
 
 Substack blocks some build-server IPs with HTTP 403, so the build falls back to `lib/feed-snapshot.json` (a committed
 copy of the feed) when the live fetch fails, and logs `using lib/feed-snapshot.json`. If you see that line, the live fetch
-was blocked and the blog is showing the snapshot. Refresh it from your own machine with `npm run snapshot` and commit the
-result, ideally whenever you publish a post. The build only fails if the live fetch fails and the snapshot is empty. Watch for failure
+was blocked and the blog is showing the snapshot. Refresh it from your own machine with `npm run snapshot` (needs Node 22.18 or later) and commit the
+result, ideally whenever you publish a post. The build only fails if the live fetch fails and the snapshot has no usable posts. Watch for failure
 emails, and note that GitHub disables scheduled workflows after 60 days without repo activity: re-enable it from the
 Actions tab if the blog stops updating.
 

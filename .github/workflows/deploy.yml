@@ -24,7 +24,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm test
-      # Fails if the Substack feed can't be fetched, so the last good deploy stays live.
+      # Falls back to lib/feed-snapshot.json if Substack can't be fetched (look for the warning annotation); fails only if the snapshot is unusable.
       - run: npm run build
       - run: npx wrangler deploy
         env:
