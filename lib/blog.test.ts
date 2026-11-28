@@ -53,6 +53,14 @@ describe("getBlogPosts", () => {
     expect(fetchMock.mock.calls[0][1].next).toBeUndefined();
   });
 
+  test("retries once after a transient failure", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    const fetchMock = vi.fn().mockRejectedValueOnce(new Error("timeout")).mockResolvedValue(new Response(FEED));
+    vi.stubGlobal("fetch", fetchMock);
+    expect(await getBlogPosts()).toHaveLength(2);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
   test("throws in production when fetch rejects", async () => {
     vi.stubEnv("NODE_ENV", "production");
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("timeout")));

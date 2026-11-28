@@ -2,7 +2,7 @@
 
 The website for Kaizen Atelier, an IT and data consultancy. It is styled as an interactive desktop: a menu bar,
 desktop icons and draggable windows. On phones it becomes a home-screen grid. Each window has its own URL
-(`/services`, `/pricing`, …) that is server-rendered and indexable.
+(`/services`, `/pricing`, …) that is prerendered as static HTML and indexable.
 
 Design: `docs/superpowers/specs/2026-11-23-desktop-redesign-design.md`
 
@@ -12,11 +12,28 @@ Design: `docs/superpowers/specs/2026-11-23-desktop-redesign-design.md`
 npm install
 npm run dev        # http://localhost:3000
 npm test           # unit + component tests (Vitest)
-npm run test:e2e   # browser tests (Playwright; builds and serves production on :3100)
+npm run test:e2e   # browser tests (Playwright; builds the static export and serves it with Wrangler on :3100)
+npm run preview    # serve the built out/ locally with Wrangler, as Cloudflare does
 npm run lint
 ```
 
 First-time e2e setup: `npx playwright install chromium`.
+
+`npm run build` (and so `npm run test:e2e`) needs network access: it reads the Substack feed and fails if it can't.
+`npm run dev` works offline, with an empty blog.
+
+## Deploy
+
+The site is a static export (`out/`) served as a Cloudflare Worker's static assets (`wrangler.jsonc`). Redirects live in
+`public/_redirects`.
+
+`.github/workflows/deploy.yml` lints, tests, builds and runs `wrangler deploy` on every push to `main`, daily at
+20:00 UTC (to pick up new Substack posts), and on demand from the Actions tab. It needs two repo secrets:
+`CLOUDFLARE_API_TOKEN` (token from the "Edit Cloudflare Workers" template) and `CLOUDFLARE_ACCOUNT_ID`.
+
+If Substack is down, the build fails and the previous deploy stays live; the next run retries. Watch for failure
+emails, and note that GitHub disables scheduled workflows after 60 days without repo activity: re-enable it from the
+Actions tab if the blog stops updating.
 
 ## How it fits together
 

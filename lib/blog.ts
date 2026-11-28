@@ -51,16 +51,21 @@ export function parseFeed(xml: string, limit = 10): BlogPost[] {
   return posts;
 }
 
+async function fetchPosts(): Promise<BlogPost[]> {
+  const res = await fetch(SUBSTACK_FEED_URL, { signal: AbortSignal.timeout(5000) });
+  if (!res.ok) throw new Error(`Substack feed returned ${res.status}`);
+  return parseFeed(await res.text());
+}
+
 /**
  * Latest posts, fetched once at build time (the site is a static export rebuilt daily).
  * In a production build a failed fetch throws, failing the build so the last good deploy stays live.
  * Elsewhere (dev, tests) it degrades to no posts so working offline still renders.
+ * Called once per exported page (root layout), so one retry keeps a single blip from failing the build.
  */
 export async function getBlogPosts(): Promise<BlogPost[]> {
   try {
-    const res = await fetch(SUBSTACK_FEED_URL, { signal: AbortSignal.timeout(5000) });
-    if (!res.ok) throw new Error(`Substack feed returned ${res.status}`);
-    return parseFeed(await res.text());
+    return await fetchPosts().catch(fetchPosts);
   } catch (err) {
     if (process.env.NODE_ENV === "production") throw err;
     return [];
