@@ -9,7 +9,8 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "preview": "wrangler dev --port 3100",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "snapshot": "node scripts/snapshot-feed.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",

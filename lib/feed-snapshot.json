@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "title": "Code is cheap, but you haven’t accepted it yet.",
+    "subtitle": "and your OpEx isn’t",
+    "href": "https://signalfeed.substack.com/p/code-is-cheap-but-you-havent-accepted",
+    "isoDate": "2026-11-09T21:01:18.000Z",
+    "date": "9 Nov 2026"
+  },
+  {
+    "title": "Why Big Data/AI Platforms Are Betting on Managed Postgres (and What It Means for Postgres Hype)",
+    "subtitle": "In justification for the world renown, globally adored DB on everyones lips",
+    "href": "https://signalfeed.substack.com/p/why-big-dataai-platforms-are-betting",
+    "isoDate": "2025-10-01T07:15:41.000Z",
+    "date": "1 Oct 2025"
+  },
+  {
+    "title": "The ACTUAL importance in Data Systems Monitoring",
+    "subtitle": "What does that alert really mean?",
+    "href": "https://signalfeed.substack.com/p/the-actual-importance-in-data-systems",
+    "isoDate": "2025-07-22T08:00:51.000Z",
+    "date": "22 Jul 2025"
+  },
+  {
+    "title": "Welcome to my Data & Tech Journey",
+    "subtitle": "Hello and welcome! I’m Connor Ryan!",
+    "href": "https://signalfeed.substack.com/p/welcome-to-my-data-and-tech-journey",
+    "isoDate": "2025-06-09T11:52:01.000Z",
+    "date": "9 Jun 2025"
+  },
+  {
+    "title": "Coming soon",
+    "subtitle": "This is Connor’s Substack.",
+    "href": "https://signalfeed.substack.com/p/coming-soon",
+    "isoDate": "2025-05-07T01:58:46.000Z",
+    "date": "7 May 2025"
+  }
+]

@@ -1,4 +1,4 @@
-import snapshotJson from "./feed-snapshot.json";
+import snapshotJson from "./feed-snapshot.json" with { type: "json" };
 import { SUBSTACK_FEED_URL } from "./site.ts";
 
 export type BlogPost = {
@@ -61,8 +61,10 @@ const FEED_HEADERS = {
 const SNAPSHOT = snapshotJson as BlogPost[];
 
 class FeedStatusError extends Error {
-  constructor(readonly status: number) {
+  readonly status: number;
+  constructor(status: number) {
     super(`Substack feed returned ${status}`);
+    this.status = status;
   }
 }
 

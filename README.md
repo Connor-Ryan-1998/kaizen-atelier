@@ -19,7 +19,7 @@ npm run lint
 
 First-time e2e setup: `npx playwright install chromium`.
 
-`npm run build` (and so `npm run test:e2e`) needs network access: it reads the Substack feed and fails if it can't.
+`npm run build` (and so `npm run test:e2e`) reads the Substack feed, falling back to the committed snapshot if it can't.
 `npm run dev` works offline, with an empty blog.
 
 ## Deploy
@@ -31,7 +31,10 @@ The site is a static export (`out/`) served as a Cloudflare Worker's static asse
 20:00 UTC (to pick up new Substack posts), and on demand from the Actions tab. It needs two repo secrets:
 `CLOUDFLARE_API_TOKEN` (token from the "Edit Cloudflare Workers" template) and `CLOUDFLARE_ACCOUNT_ID`.
 
-If Substack is down, the build fails and the previous deploy stays live; the next run retries. Watch for failure
+Substack blocks some build-server IPs with HTTP 403, so the build falls back to `lib/feed-snapshot.json` (a committed
+copy of the feed) when the live fetch fails, and logs `using lib/feed-snapshot.json`. If you see that line, the live fetch
+was blocked and the blog is showing the snapshot. Refresh it from your own machine with `npm run snapshot` and commit the
+result, ideally whenever you publish a post. The build only fails if the live fetch fails and the snapshot is empty. Watch for failure
 emails, and note that GitHub disables scheduled workflows after 60 days without repo activity: re-enable it from the
 Actions tab if the blog stops updating.
 
