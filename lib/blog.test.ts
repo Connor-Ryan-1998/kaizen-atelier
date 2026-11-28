@@ -111,14 +111,14 @@ describe("getBlogPosts", () => {
   test("production: a 200 with no posts (e.g. a bot-challenge page) falls back to the snapshot", async () => {
     production();
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-    stubFetch(vi.fn().mockResolvedValue(new Response("<html><title>Just a moment...</title></html>", { status: 200 })));
+    stubFetch(vi.fn().mockImplementation(async () => new Response("<html><title>Just a moment...</title></html>", { status: 200 })));
     expect(await getBlogPosts(SNAP)).toEqual(SNAP);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("snapshot"));
   });
 
   test("production: a 200 with no posts and an empty snapshot throws", async () => {
     production();
-    stubFetch(vi.fn().mockResolvedValue(new Response("<html></html>", { status: 200 })));
+    stubFetch(vi.fn().mockImplementation(async () => new Response("<html></html>", { status: 200 })));
     await expect(getBlogPosts([])).rejects.toThrow("no posts");
   });
 
