@@ -1,4 +1,5 @@
-import { SUBSTACK_FEED_URL } from "./site";
+import snapshotJson from "./feed-snapshot.json";
+import { SUBSTACK_FEED_URL } from "./site.ts";
 
 export type BlogPost = {
   title: string;
@@ -51,23 +52,44 @@ export function parseFeed(xml: string, limit = 10): BlogPost[] {
   return posts;
 }
 
-async function fetchPosts(): Promise<BlogPost[]> {
-  const res = await fetch(SUBSTACK_FEED_URL, { signal: AbortSignal.timeout(5000) });
-  if (!res.ok) throw new Error(`Substack feed returned ${res.status}`);
+/** Substack's bot protection rejects bare server requests, so look like a browser. */
+const FEED_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+  Accept: "application/rss+xml, application/xml;q=0.9, */*;q=0.8",
+};
+
+const SNAPSHOT = snapshotJson as BlogPost[];
+
+class FeedStatusError extends Error {
+  constructor(readonly status: number) {
+    super(`Substack feed returned ${status}`);
+  }
+}
+
+export async function fetchPosts(): Promise<BlogPost[]> {
+  const res = await fetch(SUBSTACK_FEED_URL, { headers: FEED_HEADERS, signal: AbortSignal.timeout(5000) });
+  if (!res.ok) throw new FeedStatusError(res.status);
   return parseFeed(await res.text());
 }
 
 /**
- * Latest posts, fetched once at build time (the site is a static export rebuilt daily).
- * In a production build a failed fetch throws, failing the build so the last good deploy stays live.
- * Elsewhere (dev, tests) it degrades to no posts so working offline still renders.
- * Called once per exported page (root layout), so one retry keeps a single blip from failing the build.
+ * Latest posts, fetched at build time (the site is a static export rebuilt daily).
+ * Substack blocks some build-server IPs (HTTP 403), so in a production build a failed live fetch falls back
+ * to lib/feed-snapshot.json (refresh with `npm run snapshot`) and warns; it throws only if the snapshot is empty.
+ * Elsewhere (dev, tests) a failure gives no posts so working offline still renders.
+ * Called once per exported page (root layout), so one retry keeps a single blip from failing the build;
+ * a 403 is deterministic, so it isn't retried.
  */
-export async function getBlogPosts(): Promise<BlogPost[]> {
+export async function getBlogPosts(snapshot: BlogPost[] = SNAPSHOT): Promise<BlogPost[]> {
   try {
-    return await fetchPosts().catch(fetchPosts);
+    return await fetchPosts().catch((err) => {
+      if (err instanceof FeedStatusError && err.status === 403) throw err;
+      return fetchPosts();
+    });
   } catch (err) {
-    if (process.env.NODE_ENV === "production") throw err;
-    return [];
+    if (process.env.NODE_ENV !== "production") return [];
+    if (snapshot.length === 0) throw err;
+    console.warn(`Substack feed unavailable (${(err as Error).message}); using lib/feed-snapshot.json`);
+    return snapshot;
   }
 }

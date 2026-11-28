@@ -1,4 +1,4 @@
-import { getBlogPosts, parseFeed } from "./blog";
+import { getBlogPosts, parseFeed, type BlogPost } from "./blog";
 import { SUBSTACK_FEED_URL } from "./site";
 
 const FEED = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title><![CDATA[Connor’s Substack]]></title><link>https://signalfeed.substack.com</link>
@@ -38,48 +38,91 @@ describe("parseFeed", () => {
   });
 });
 
+
+const SNAP: BlogPost[] = [
+  { title: "From snapshot", subtitle: null, href: "https://signalfeed.substack.com/p/snap", isoDate: "2026-10-01T00:00:00.000Z", date: "1 Oct 2026" },
+];
+
 describe("getBlogPosts", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
     vi.unstubAllEnvs();
+    vi.restoreAllMocks();
   });
+
+  const production = () => vi.stubEnv("NODE_ENV", "production");
+  const stubFetch = (fn: ReturnType<typeof vi.fn>) => vi.stubGlobal("fetch", fn);
 
   test("fetches the feed without Next revalidation", async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(FEED));
-    vi.stubGlobal("fetch", fetchMock);
-    const posts = await getBlogPosts();
+    stubFetch(fetchMock);
+    const posts = await getBlogPosts(SNAP);
     expect(posts).toHaveLength(2);
     expect(fetchMock.mock.calls[0][0]).toBe(SUBSTACK_FEED_URL);
     expect(fetchMock.mock.calls[0][1].next).toBeUndefined();
   });
 
-  test("retries once after a transient failure", async () => {
-    vi.stubEnv("NODE_ENV", "production");
+  test("sends browser-like User-Agent and Accept headers", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(FEED));
+    stubFetch(fetchMock);
+    await getBlogPosts(SNAP);
+    const headers = fetchMock.mock.calls[0][1].headers;
+    expect(headers["User-Agent"]).toMatch(/Mozilla\/5\.0/);
+    expect(headers["Accept"]).toContain("application/rss+xml");
+  });
+
+  test("still retries a network error once", async () => {
+    production();
     const fetchMock = vi.fn().mockRejectedValueOnce(new Error("timeout")).mockResolvedValue(new Response(FEED));
-    vi.stubGlobal("fetch", fetchMock);
-    expect(await getBlogPosts()).toHaveLength(2);
+    stubFetch(fetchMock);
+    expect(await getBlogPosts(SNAP)).toHaveLength(2);
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  test("throws in production when fetch rejects", async () => {
-    vi.stubEnv("NODE_ENV", "production");
-    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("timeout")));
-    await expect(getBlogPosts()).rejects.toThrow();
+  test("does not retry a 403", async () => {
+    production();
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const fetchMock = vi.fn().mockResolvedValue(new Response("", { status: 403 }));
+    stubFetch(fetchMock);
+    expect(await getBlogPosts(SNAP)).toEqual(SNAP);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  test("throws in production when response not ok", async () => {
-    vi.stubEnv("NODE_ENV", "production");
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
-    await expect(getBlogPosts()).rejects.toThrow("503");
+  test("production: falls back to the snapshot and warns when the live fetch fails", async () => {
+    production();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    stubFetch(vi.fn().mockRejectedValue(new Error("timeout")));
+    expect(await getBlogPosts(SNAP)).toEqual(SNAP);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("snapshot"));
   });
 
-  test("returns [] outside production when fetch rejects", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("timeout")));
-    expect(await getBlogPosts()).toEqual([]);
+  test("production: throws when the live fetch fails and the snapshot is empty", async () => {
+    production();
+    stubFetch(vi.fn().mockRejectedValue(new Error("timeout")));
+    await expect(getBlogPosts([])).rejects.toThrow("timeout");
   });
 
-  test("returns [] outside production when response not ok", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
-    expect(await getBlogPosts()).toEqual([]);
+  test("production: throws with the status when response not ok and the snapshot is empty", async () => {
+    production();
+    stubFetch(vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
+    await expect(getBlogPosts([])).rejects.toThrow("503");
+  });
+
+  test("production: live posts win over the snapshot", async () => {
+    production();
+    stubFetch(vi.fn().mockResolvedValue(new Response(FEED)));
+    const posts = await getBlogPosts(SNAP);
+    expect(posts).toHaveLength(2);
+    expect(posts[0].title).not.toBe("From snapshot");
+  });
+
+  test("non-production ignores the snapshot when the fetch rejects", async () => {
+    stubFetch(vi.fn().mockRejectedValue(new Error("timeout")));
+    expect(await getBlogPosts(SNAP)).toEqual([]);
+  });
+
+  test("non-production returns [] when response not ok", async () => {
+    stubFetch(vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
+    expect(await getBlogPosts(SNAP)).toEqual([]);
   });
 });
