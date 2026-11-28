@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("/notes redirects to /blog", async ({ request }) => {
+test("/notes redirects to /blog with 301", async ({ request }) => {
   const res = await request.get("/notes", { maxRedirects: 0 });
-  expect(res.status()).toBe(308);
+  expect(res.status()).toBe(301);
   expect(res.headers()["location"]).toMatch(/\/blog$/);
 });
 

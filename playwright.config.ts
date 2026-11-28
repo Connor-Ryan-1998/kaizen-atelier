@@ -8,8 +8,9 @@ export default defineConfig({
   reporter: "list",
   use: { baseURL },
   webServer: {
-    // Production build: deterministic (dev-server on-demand compiles race under parallel tests).
-    command: "npm run build && npx next start -p 3100",
+    // Static export served by Wrangler, same as Cloudflare in production
+    // (and deterministic: dev-server on-demand compiles race under parallel tests).
+    command: "npm run build && npm run preview",
     url: baseURL,
     reuseExistingServer: false,
     timeout: 300_000,
