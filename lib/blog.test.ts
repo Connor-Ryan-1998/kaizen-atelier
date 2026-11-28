@@ -39,23 +39,38 @@ describe("parseFeed", () => {
 });
 
 describe("getBlogPosts", () => {
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
 
-  test("fetches the feed with hourly revalidation", async () => {
+  test("fetches the feed without Next revalidation", async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(FEED));
     vi.stubGlobal("fetch", fetchMock);
     const posts = await getBlogPosts();
     expect(posts).toHaveLength(2);
     expect(fetchMock.mock.calls[0][0]).toBe(SUBSTACK_FEED_URL);
-    expect(fetchMock.mock.calls[0][1].next.revalidate).toBe(3600);
+    expect(fetchMock.mock.calls[0][1].next).toBeUndefined();
   });
 
-  test("returns [] when fetch rejects", async () => {
+  test("throws in production when fetch rejects", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("timeout")));
+    await expect(getBlogPosts()).rejects.toThrow();
+  });
+
+  test("throws in production when response not ok", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
+    await expect(getBlogPosts()).rejects.toThrow("503");
+  });
+
+  test("returns [] outside production when fetch rejects", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("timeout")));
     expect(await getBlogPosts()).toEqual([]);
   });
 
-  test("returns [] when response not ok", async () => {
+  test("returns [] outside production when response not ok", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("nope", { status: 503 })));
     expect(await getBlogPosts()).toEqual([]);
   });

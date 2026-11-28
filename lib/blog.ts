@@ -51,13 +51,18 @@ export function parseFeed(xml: string, limit = 10): BlogPost[] {
   return posts;
 }
 
-/** Latest posts, refreshed hourly. Substack being down or slow must never break the site. */
+/**
+ * Latest posts, fetched once at build time (the site is a static export rebuilt daily).
+ * In a production build a failed fetch throws, failing the build so the last good deploy stays live.
+ * Elsewhere (dev, tests) it degrades to no posts so working offline still renders.
+ */
 export async function getBlogPosts(): Promise<BlogPost[]> {
   try {
-    const res = await fetch(SUBSTACK_FEED_URL, { next: { revalidate: 3600 }, signal: AbortSignal.timeout(5000) });
-    if (!res.ok) return [];
+    const res = await fetch(SUBSTACK_FEED_URL, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) throw new Error(`Substack feed returned ${res.status}`);
     return parseFeed(await res.text());
-  } catch {
+  } catch (err) {
+    if (process.env.NODE_ENV === "production") throw err;
     return [];
   }
 }
