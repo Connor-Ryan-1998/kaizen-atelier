@@ -71,7 +71,10 @@ class FeedStatusError extends Error {
 export async function fetchPosts(): Promise<BlogPost[]> {
   const res = await fetch(SUBSTACK_FEED_URL, { headers: FEED_HEADERS, signal: AbortSignal.timeout(5000) });
   if (!res.ok) throw new FeedStatusError(res.status);
-  return parseFeed(await res.text());
+  const posts = parseFeed(await res.text());
+  // Bot protection can answer 200 with an HTML challenge page; treat "no posts" as a failed fetch.
+  if (posts.length === 0) throw new Error("Substack feed contained no posts");
+  return posts;
 }
 
 /**
